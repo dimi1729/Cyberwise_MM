@@ -30,7 +30,7 @@ def plot_confusion_matrix(cm, class_names: Optional[List[str]] = None, name: Opt
     plt.ylabel('True Labels')
     plt.title('Confusion Matrix')
     if name is not None:
-        plt.savefig(f"plots/{name}_confusion_matrix.png")
+        plt.savefig(f"plots/{name}.png")
     else:
         plt.show()
 
@@ -44,6 +44,35 @@ def plot_betas(model, name: Optional[str] = None):
     plt.title('Beta Coefficients from the Linear Regression Model')
     plt.grid(True)
     if name is not None:
-        plt.savefig(f"plots/{name}_betas.png")
+        plt.savefig(f"plots/{name}.png")
+    else:
+        plt.show()
+
+def plot_feature_importance(importances: np.ndarray, 
+                          feature_names: List[str], 
+                          name: str,
+                          top_n: int = 20):
+    plt.figure(figsize=(10, 6))
+    indices = np.argsort(importances)[-top_n:]
+    plt.title(f'Feature Importance - {name}')
+    plt.barh(range(len(indices)), importances[indices], align='center')
+    plt.yticks(range(len(indices)), [feature_names[i] for i in indices])
+    plt.xlabel('Importance Score')
+    plt.tight_layout()
+    if name is not None:
+        plt.savefig(f'plots/{name}.png')
+    else:
+        plt.show()
+ 
+def plot_precision_recall_curve(precision: List[float], recall: List[float], name: Optional[str] = None):
+    plt.figure(figsize=(10, 6))
+    plt.step(recall, precision, where='post', label='Precision-Recall Curve')
+    plt.xlabel('Recall')
+    plt.ylabel('Precision')
+    plt.title('Precision-Recall Curve')
+    plt.legend()
+    plt.grid(True)
+    if name is not None:
+        plt.savefig(f"plots/{name}.png")
     else:
         plt.show()
