@@ -4,17 +4,14 @@ import pandas as pd
 import numpy as np
 import torch
 import torch.nn as nn
-from sklearn.model_selection import train_test_split
-from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import confusion_matrix, classification_report
+from sklearn.metrics import confusion_matrix, precision_recall_curve
 
 from typing import List, Tuple, Optional
 
 from analysis.preprocessing import split_cic_data
-from analysis.plotting import plot_confusion_matrix, plot_feature_importance, plot_betas, plot_losses, plot_precision_recall_curve
+import analysis.plotting as plotting
 from models.linear_regression import RegressionModel
 from models.decision_trees import RandomForestAnalyzer, XGBoostRFAnalyzer
-from sklearn.metrics import precision_recall_curve, average_precision_score
 
 
 if __name__ == '__main__':
@@ -33,7 +30,7 @@ if __name__ == '__main__':
         model.train()
         optimizer.zero_grad()
         pred = model(x_train)
-        loss = model.weighted_mse_loss(pred, y_train, (1, 10))
+        loss = model.weighted_mse_loss(pred, y_train, (1, 1))
         loss.backward()
 
         nn.utils.clip_grad_norm_(model.parameters(), max_norm=1.0)
@@ -60,19 +57,28 @@ if __name__ == '__main__':
         print(f'Test Loss: {test_loss.item():.4f}')
 
 
-    model_name: str = "lin_reg_pos10x_epoch3000"    
-    plot_losses(train_losses, val_losses, name=f'losses_{model_name}')
-    plot_betas(model, name=f'betas_{model_name}')
+    model_name: str = "lin_reg_epoch3000"    
+    # plot_losses(train_losses, val_losses, name=f'losses_{model_name}')
+    #plot_betas(model, name=f'betas_{model_name}')
     with torch.no_grad():
         test_pred = model(x_test)
         predicted_labels = (test_pred >= 0.5).float()
-
     cm = confusion_matrix(y_test.cpu().numpy(), predicted_labels.cpu().numpy())
+
     with torch.no_grad():
         test_pred = model(x_test)
         test_scores = test_pred.cpu().numpy()
         y_true = y_test.cpu().numpy()
+    
+    output = {
+        "predictions": test_scores.tolist(),
+        "actual": y_true.tolist()
+    }
+    with open(f"results/{model_name}.json", "w") as f:
+        json.dump(output, f)
+    
+    quit()
 
     precision, recall, thresholds = precision_recall_curve(y_true, test_scores)
-    avg_precision = average_precision_score(y_true, test_scores)
-    plot_precision_recall_curve(precision, recall, avg_precision, name=f"pr_{model_name}")
+    plotting.plot_precision_recall_curve(precision, recall)
+    plotting.plot_betas(model, name=f'betas_{model_name}')
