@@ -23,12 +23,15 @@ def plot_confusion_matrix(cm, class_names: Optional[List[str]] = None, name: Opt
     if class_names is None:
         class_names = [f'Class {i}' for i in range(cm.shape[0])]
 
-    plt.figure(figsize=(8, 6))
+    plt.figure(figsize=(10, 8))
     sns.heatmap(cm, annot=True, fmt='d',
-                xticklabels=class_names, yticklabels=class_names, cmap='Blues')
-    plt.xlabel('Predicted Labels')
-    plt.ylabel('True Labels')
-    plt.title('Confusion Matrix')
+                xticklabels=class_names, yticklabels=class_names, cmap='Blues',
+                annot_kws={"size": 16})
+    plt.xticks(fontsize=18)
+    plt.yticks(fontsize=18)
+    plt.xlabel('Predicted', fontsize=20)
+    plt.ylabel('True', fontsize=20)
+    plt.title('Confusion Matrix', fontsize=22)
     if name is not None:
         plt.savefig(f"plots/{name}.png")
     else:
@@ -65,30 +68,32 @@ def plot_feature_importance(importances: np.ndarray,
         plt.show()
  
 def plot_precision_recall_curve(precision: List[float], recall: List[float], name: Optional[str] = None):
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 7))
 
     # Entire plot
-    ax1.step(recall, precision, where='post', label='Precision-Recall Curve')
+    ax1.step(recall, precision, where='post', color='blue', label='Precision-Recall Curve')
     ax1.set_xlim(0, 1.01)
     ax1.set_ylim(0, 1.01)
-    ax1.set_xlabel('Recall')
-    ax1.set_ylabel('Precision')
-    ax1.set_title('Precision-Recall Curve')
-    ax1.legend()
-    ax1.grid(False)
-
+    ax1.set_xlabel('Recall', fontsize=22)
+    ax1.set_ylabel('Precision', fontsize=22)
+    ax1.set_title('Precision-Recall Curve', fontsize=22)
+    #ax1.legend(loc='lower left', fontsize=20)
+    ax1.grid(True)
     # Zoomed in plot
-    ax2.step(recall, precision, where='post', label='Precision-Recall Curve')
+    ax2.step(recall, precision, where='post', color='blue', label='Precision-Recall Curve')
     ax2.set_xlim(0.95, 1.001)
     ax2.set_ylim(0.95, 1.001)
-    ax2.set_xlabel('Recall')
-    ax2.set_ylabel('Precision')
-    ax2.set_title('Zoomed Precision-Recall Curve')
-    ax2.legend()
-    ax2.grid(False)
+    ax2.set_xlabel('Recall', fontsize=22)
+    ax2.set_ylabel('Precision', fontsize=22)
+    ax2.set_title('Zoomed Precision-Recall Curve', fontsize=22)
+    #ax2.legend(loc='lower right', fontsize=20)
+    ax2.grid(True)
+
+    ax1.tick_params(axis='both', which='major', labelsize=20)
+    ax2.tick_params(axis='both', which='major', labelsize=20)
 
     if name is not None:
-        plt.savefig(f"plots/{name}.png")
+        plt.savefig(f"plots/{name}.png", dpi=300)
     else:
         plt.show()
 
@@ -107,7 +112,7 @@ def plot_multiple_precision_recall_curves(precisions: List[List[float]], recalls
     ax1.set_ylabel('Precision')
     ax1.set_title('Precision-Recall Curves for Multiple Models')
     ax1.legend(loc='lower left')
-    ax1.grid(False)
+    ax1.grid(True)
 
     ax2.set_xlim(0.95, 1.001)
     ax2.set_ylim(0.95, 1.001)
@@ -115,10 +120,10 @@ def plot_multiple_precision_recall_curves(precisions: List[List[float]], recalls
     ax2.set_ylabel('Precision')
     ax2.set_title('Zoomed Precision-Recall Curves')
     ax2.legend(loc='lower left')
-    ax2.grid(False)
+    ax2.grid(True)
     
     if name is not None:
-        plt.savefig(f"plots/{name}.png")
+        plt.savefig(f"plots/{name}.png", dpi=300)
     else:
         plt.show()
 
@@ -126,30 +131,34 @@ def plot_roc_curve(fpr: List[float], tpr: List[float], roc_auc: float, name: Opt
     plt.figure(figsize=(10, 6))
     plt.plot(fpr, tpr, color='blue', lw=2, label=f'ROC curve (AUC = {roc_auc:.2f})')
     plt.plot([0, 1], [0, 1], color='grey', lw=1, linestyle='--', label='Random Chance')
-    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(14, 6))
+    fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(16, 7))
     # Full ROC curve with Random Chance line
     ax1.plot(fpr, tpr, color='blue', lw=2, label=f'ROC curve (AUC = {roc_auc:.2f})')
     ax1.plot([0, 1], [0, 1], color='grey', lw=1, linestyle='--', label='Random Chance')
-    ax1.set_xlabel('False Positive Rate')
-    ax1.set_ylabel('True Positive Rate')
-    ax1.set_title('ROC Curve')
-    ax1.legend(loc='lower right')
+    ax1.set_xlabel('False Positive Rate', fontsize=22)
+    ax1.set_ylabel('True Positive Rate', fontsize=22)
+    ax1.set_title('ROC Curve', fontsize=24)
+    ax1.legend(loc='lower right', fontsize=20)
     ax1.grid(True)
     # Zoomed ROC curve (top left area) without Random Chance line
     ax2.plot(fpr, tpr, color='blue', lw=2, label=f'ROC curve (AUC = {roc_auc:.2f})')
-    ax2.set_xlabel('False Positive Rate')
-    ax2.set_ylabel('True Positive Rate')
-    ax2.set_title('Zoomed ROC Curve')
-    ax2.legend(loc='lower right')
+    ax2.set_xlabel('False Positive Rate', fontsize=22)
+    ax2.set_ylabel('True Positive Rate', fontsize=22)
+    ax2.set_title('Zoomed ROC Curve', fontsize=22)
+    #ax2.legend(loc='lower right')
     ax2.grid(True)
     ax2.set_xlim(0, 0.25)
     ax2.set_ylim(0.95, 1)
     plt.ylabel('True Positive Rate')
-    plt.title('Receiver Operating Characteristic (ROC)')
+    plt.title('Zoomed ROC Curve')
     plt.legend(loc='lower right')
     plt.grid(True)
+
+    ax1.tick_params(axis='both', which='major', labelsize=20)
+    ax2.tick_params(axis='both', which='major', labelsize=20)
+
     if name is not None:
-        plt.savefig(f"plots/{name}.png")
+        plt.savefig(f"plots/{name}.png", dpi=300)
     else:
         plt.show()
 
@@ -190,6 +199,6 @@ def plot_multiple_roc_curves(fprs: List[List[float]], tprs: List[List[float]], r
     plt.legend(loc='lower right')
     plt.grid(True)
     if name is not None:
-        plt.savefig(f"plots/{name}.png")
+        plt.savefig(f"plots/{name}.png", dpi=300)
     else:
         plt.show()

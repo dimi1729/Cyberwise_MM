@@ -118,4 +118,5 @@ if __name__ == '__main__':
                 "data/Merged07.csv", "data/Merged08.csv", "data/Merged09.csv", 
                 "data/Merged10.csv", 
                 ]
-    merge_cic_csvs(cic_csvs, (1, 1), "data/even_merged_1-10.csv")
+    # merge_cic_csvs(cic_csvs, (1, 1), "data/even_merged_1-10.csv")
+    merge_cic_csvs(cic_csvs, (100, 1), "data/100:1_merged_1-10.csv")

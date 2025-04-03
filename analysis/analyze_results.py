@@ -5,20 +5,20 @@ import torch
 import torch.nn as nn
 from sklearn.metrics import confusion_matrix, precision_recall_curve
 
-from typing import Dict, List
+from typing import Dict, List, Any, Optional
 from sklearn.metrics import roc_curve, roc_auc_score
 
 import analysis.plotting as plotting
 
-def plot_rocs_and_prcs():
+def plot_rocs_and_prcs(results: Dict[str, Dict], combined_name: Optional[str] = None) -> None:
     precisions = []
     recalls = []
     fprs = []
     tprs = []
     roc_aucs = []
-    for result in [pos_1x, pos_5x, pos_10x, pos_20x]:
-        test_scores = result["predictions"]
-        y_true = result["actual"]
+    for name, json_dict in results.items():
+        test_scores = json_dict["test_predictions"]
+        y_true = json_dict["test_actual"]
 
         precision, recall, thresholds = precision_recall_curve(y_true, test_scores)
         precisions.append(precision)
@@ -30,27 +30,28 @@ def plot_rocs_and_prcs():
         fprs.append(fpr)
         tprs.append(tpr)
         roc_aucs.append(roc_auc)
-    plotting.plot_multiple_precision_recall_curves(precisions, recalls,
-                                                   labels = ["No weight", "5x", "10x", "20x"],
-                                                   name="linear_prcs_epoch3000")
-    plotting.plot_multiple_roc_curves(fprs, tprs, roc_aucs,
-                                      labels = ["No weight", "5x", "10x", "20x"],
-                                      name='linear_rocs_epoch3000')
+        plotting.plot_precision_recall_curve(precision, recall, name=f"prc_{name}")
+        plotting.plot_roc_curve(fpr, tpr, roc_auc, name=f"roc_{name}")
+    
+    if combined_name is not None:
+        plotting.plot_multiple_precision_recall_curves(precisions, recalls,
+                                                    labels = list(results.keys()),
+                                                    name=f"prcs_{name}")
+        plotting.plot_multiple_roc_curves(fprs, tprs, roc_aucs,
+                                        labels = list(results.keys()),
+                                        name=f"rocs_{name}")
 
 
 
 if __name__ == '__main__':
     
-    with open("results/lin_reg_epoch3000.json", 'r') as f:
-        pos_1x: Dict[str, List[List[float]]] = json.load(f)
-    with open("results/lin_reg_pos5x_epoch3000.json", 'r') as f:
-        pos_5x: Dict[str, List[List[float]]] = json.load(f)   
-    with open("results/lin_reg_pos10x_epoch3000.json", 'r') as f:
-        pos_10x: Dict[str, List[List[float]]] = json.load(f)   
-    with open("results/lin_reg_pos20x_epoch3000.json", 'r') as f:
-        pos_20x: Dict[str, List[List[float]]] = json.load(f)   
-    
-    model = torch.load("results/lin_reg_epoch3000_model.pt")
-    plotting.plot_betas(model, name="linear_betas_epoch3000")
+    with open("results/lin_reg_e3000_1-1.json", 'r') as f:
+        lin_reg_results: Dict[str, List[List[float]]] = json.load(f)
 
- 
+    plot_rocs_and_prcs({"lin_reg_e3000_1-1": lin_reg_results})
+    y_true = [item[0] for item in lin_reg_results["test_actual"]]
+    #print(y_true)
+    y_pred = [1 if score[0] >= 0.5 else 0 for score in lin_reg_results["test_predictions"]]
+    #print(y_pred)
+    cm = confusion_matrix(y_true, y_pred)
+    plotting.plot_confusion_matrix(cm, class_names=["Benign", "Malicious"], name="cm_e3000_1-1")
