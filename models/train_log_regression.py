@@ -43,3 +43,10 @@ plot_confusion_matrix(
     confusion_matrix(y_test, y_pred),
     class_names=["Benign", "Malicious"]
 )
+
+coefficients = model.coef_[0]
+feature_importance = pd.DataFrame({'Feature': X.columns, 'Coefficient': coefficients})
+feature_importance['Abs_Coefficient'] = feature_importance['Coefficient'].abs()
+feature_importance = feature_importance.sort_values(by='Abs_Coefficient', ascending=False)
+print("Feature Importance (sorted by absolute coefficient value):")
+print(feature_importance[['Feature', 'Coefficient']])

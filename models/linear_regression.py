@@ -42,7 +42,7 @@ class RegressionModel(nn.Module):
 
 if __name__ == '__main__':
 
-    df = pd.read_csv("data/realistic_merged_1-10.csv") 
+    df = pd.read_csv("data/even_merged_1-10.csv") 
     x_train_np, x_val_np, x_test_np, y_train_np, y_val_np, y_test_np = split_cic_data(df, 0.7, 0.15, 0.15)
     
     # Convert numpy arrays to torch tensors

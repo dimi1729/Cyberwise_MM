@@ -4,6 +4,7 @@ import numpy as np
 import torch
 import torch.nn as nn
 from sklearn.metrics import confusion_matrix, precision_recall_curve
+from sklearn.metrics import classification_report, accuracy_score, confusion_matrix, accuracy_score, precision_score, recall_score, f1_score, confusion_matrix
 
 from typing import Dict, List, Any, Optional
 from sklearn.metrics import roc_curve, roc_auc_score
@@ -55,3 +56,13 @@ if __name__ == '__main__':
     #print(y_pred)
     cm = confusion_matrix(y_true, y_pred)
     plotting.plot_confusion_matrix(cm, class_names=["Benign", "Malicious"], name="cm_e3000_1-1")
+    accuracy = accuracy_score(y_true, y_pred)
+    precision = precision_score(y_true, y_pred)
+    recall = recall_score(y_true, y_pred)
+    f1 = f1_score(y_true, y_pred)
+
+        
+    print(f'Accuracy: {accuracy:.4f}')
+    print(f'Precision: {precision:.4f}')
+    print(f'Recall: {recall:.4f}')
+    print(f'F1 Score: {f1:.4f}')
