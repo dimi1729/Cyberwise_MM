@@ -46,10 +46,10 @@ def plot_rocs_and_prcs(results: Dict[str, Dict], combined_name: Optional[str] = 
 
 if __name__ == '__main__':
     
-    with open("results/lin_reg_e3000_1-1.json", 'r') as f:
+    with open("results/oned_cnn_3000e.json", 'r') as f:
         lin_reg_results: Dict[str, List[List[float]]] = json.load(f)
 
-    plot_rocs_and_prcs({"lin_reg_e3000_1-1": lin_reg_results})
+    #plot_rocs_and_prcs({"lin_reg_e3000_1-1": lin_reg_results})
     y_true = [item[0] for item in lin_reg_results["test_actual"]]
     #print(y_true)
     y_pred = [1 if score[0] >= 0.5 else 0 for score in lin_reg_results["test_predictions"]]

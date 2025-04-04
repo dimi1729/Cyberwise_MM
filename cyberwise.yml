@@ -37,4 +37,6 @@ dependencies:
       - seaborn==0.13.2
       - six==1.17.0
       - threadpoolctl==3.6.0
+      - folium==0.19.5
+
 prefix: /home/dimi1729/miniconda3/envs/cyberwise

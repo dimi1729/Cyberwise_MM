@@ -59,7 +59,7 @@ if __name__ == '__main__':
     # Define an optimizer (here we use Adam) and learning rate
     optimizer = optim.Adam(model.parameters(), lr=0.001)
     
-    epochs = 3000
+    epochs = 5000
     train_losses = []
     val_losses = []
     
@@ -67,7 +67,7 @@ if __name__ == '__main__':
         model.train()
         optimizer.zero_grad()
         pred = model(x_train)
-        loss = model.mse_loss(pred, y_train)
+        loss = model.lasso_mse_loss(pred, y_train, lam=0.05)
         loss.backward()
         optimizer.step()
         
@@ -92,5 +92,5 @@ if __name__ == '__main__':
         "test_predictions": test_pred.cpu().numpy().tolist(),
         "test_actual": y_test.cpu().numpy().tolist()
     }
-    with open("results/ling_reg_e3000_realistic.json", "w") as f:
+    with open("results/lin_reg_lasso_e5000_1-1.json", "w") as f:
         json.dump(output, f)
