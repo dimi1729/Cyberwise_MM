@@ -60,7 +60,7 @@ class OneDCNN(nn.Module):
 
 if __name__ == '__main__':
 
-    df = pd.read_csv("data/Merged01.csv")
+    df = pd.read_csv("data/even_merged_1-10.csv")
     x_train, x_val, x_test, y_train, y_val, y_test = split_cic_data(df, 0.7, 0.15, 0.15)
     
     n_features = x_train.shape[1]
@@ -68,7 +68,7 @@ if __name__ == '__main__':
     
     optimizer = torch.optim.Adam(model.parameters(), lr=0.001)
     
-    num_epochs = 10
+    num_epochs = 3000
     for epoch in range(num_epochs):
         model.train()
         optimizer.zero_grad()
@@ -81,7 +81,6 @@ if __name__ == '__main__':
     
     print(f"Training Loss: {loss.item():.4f}")
     
-    # Evaluate on validation and test sets
     model.eval()
     with torch.no_grad():
         val_pred = model(x_val)
@@ -92,12 +91,11 @@ if __name__ == '__main__':
         test_loss = model.mse_loss(test_pred, y_test)
         print(f"Test Loss: {test_loss.item():.4f}")
     
-    # Optionally, save results to JSON
     output = {
         "val_predictions": val_pred.cpu().numpy().tolist(),
         "val_actual": y_val.cpu().numpy().tolist(),
         "test_predictions": test_pred.cpu().numpy().tolist(),
         "test_actual": y_test.cpu().numpy().tolist()
     }
-    with open("results/one_d_cnn_results.json", "w") as f:
+    with open("results/oned_cnn_3000e.json", "w") as f:
         json.dump(output, f)
