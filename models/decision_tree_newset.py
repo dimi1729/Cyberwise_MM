@@ -7,8 +7,8 @@ from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_sc
 import matplotlib.pyplot as plt
 from sklearn.metrics import plot_confusion_matrix
 
-train_csv = '../data/UNSW_NB15_training-set(in).csv'
-test_csv = '../data/UNSW_NB15_testing-set(in).csv'
+train_csv = 'data/UNSW_NB15_training-set(in).csv'
+test_csv = 'data/UNSW_NB15_testing-set(in).csv'
 
 train_data = pd.read_csv(train_csv)
 test_data = pd.read_csv(test_csv)
